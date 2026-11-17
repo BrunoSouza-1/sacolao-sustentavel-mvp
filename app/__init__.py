@@ -60,4 +60,4 @@ with app.app_context():
                 db.session.add_all(ofertas_iniciais)
                 db.session.commit()
 
-return app
+    return app
