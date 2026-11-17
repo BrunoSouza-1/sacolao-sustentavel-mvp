@@ -5,26 +5,80 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sacolão Sustentável — Ofertas do Dia</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body.high-contrast {
+      background-color: #000000 !important;
+      color: #ffffff !important;
+    }
+    body.high-contrast header {
+      background-color: #000000 !important;
+      border-bottom: 3px solid #ffff00 !important;
+    }
+    body.high-contrast .card {
+      background-color: #000000 !important;
+      color: #ffffff !important;
+      border: 2px solid #ffff00 !important;
+    }
+    body.high-contrast .text-muted {
+      color: #d4d4d4 !important;
+    }
+    body.high-contrast .text-success {
+      color: #00ff66 !important;
+    }
+    body.high-contrast .btn-success {
+      background-color: #ffff00 !important;
+      color: #000000 !important;
+      border: 2px solid #ffffff !important;
+    }
+    body.high-contrast .btn-outline-light,
+    body.high-contrast .btn-a11y {
+      border: 2px solid #ffff00 !important;
+      color: #ffff00 !important;
+      background-color: #000000 !important;
+    }
+  </style>
 </head>
 <body class="bg-light">
-  <header class="bg-success text-white p-3 d-flex justify-content-between align-items-center">
+  <header class="bg-success text-white p-3 d-flex flex-wrap justify-content-between align-items-center gap-2">
     <h1 class="h5 m-0">Sacolão Sustentável</h1>
-    <a href="{{ url_for('main.login') }}" class="btn btn-outline-light btn-sm" style="min-height:48px;display:inline-flex;align-items:center;">Área do Lojista</a>
+    <nav aria-label="Recursos de acessibilidade e acesso restrito" class="d-flex align-items-center gap-2">
+      <button type="button" id="btn-contrast" class="btn btn-outline-light btn-sm btn-a11y" style="min-height:48px;" aria-pressed="false" onclick="toggleContrast()">
+        Alto Contraste
+      </button>
+      <button type="button" id="btn-font" class="btn btn-outline-light btn-sm btn-a11y" style="min-height:48px;" aria-pressed="false" onclick="toggleFontSize()">
+        A+ Fonte
+      </button>
+      <a href="{{ url_for('main.login') }}" class="btn btn-outline-light btn-sm" style="min-height:48px;display:inline-flex;align-items:center;">Área do Lojista</a>
+    </nav>
   </header>
-  <main class="container py-3" style="max-width:480px;">
+
+  <main class="container py-3" style="max-width:480px;" role="main" aria-label="Lista de ofertas sustentáveis disponíveis">
     {% for item in cards %}
-      <article class="card mb-3 p-3">
+      <article class="card mb-3 p-3" aria-label="Oferta: {{ item.oferta.nome_item }}">
         <h2 class="h6 fw-bold">{{ item.oferta.nome_item }}</h2>
         <p class="mb-2">Disponível: {{ item.oferta.quantidade }}</p>
         <p class="mb-3">
-          <span class="text-decoration-line-through text-muted">De R$ {{ "%.2f"|format(item.oferta.preco_original) }}</span>
-          <strong class="text-success fs-5 ms-2">Por R$ {{ "%.2f"|format(item.oferta.preco_promocional) }}</strong>
+          <span class="text-decoration-line-through text-muted" aria-label="Preço original {{ '%.2f'|format(item.oferta.preco_original) }} reais">De R$ {{ "%.2f"|format(item.oferta.preco_original) }}</span>
+          <strong class="text-success fs-5 ms-2" aria-label="Preço promocional {{ '%.2f'|format(item.oferta.preco_promocional) }} reais">Por R$ {{ "%.2f"|format(item.oferta.preco_promocional) }}</strong>
         </p>
-        <a href="{{ item.link_wpp }}" target="_blank" class="btn btn-success w-100 fw-bold" style="min-height:48px;">Reservar no WhatsApp</a>
+        <a href="{{ item.link_wpp }}" target="_blank" rel="noopener" class="btn btn-success w-100 fw-bold" style="min-height:48px;" aria-label="Reservar {{ item.oferta.nome_item }} pelo WhatsApp">Reservar no WhatsApp</a>
       </article>
     {% else %}
       <p class="text-center text-muted mt-4">Nenhuma oferta ativa no momento.</p>
     {% endfor %}
   </main>
+
+  <script>
+    function toggleContrast() {
+      const active = document.body.classList.toggle('high-contrast');
+      document.getElementById('btn-contrast').setAttribute('aria-pressed', active);
+    }
+    let enlarged = false;
+    function toggleFontSize() {
+      enlarged = !enlarged;
+      document.documentElement.style.fontSize = enlarged ? '125%' : '100%';
+      document.getElementById('btn-font').setAttribute('aria-pressed', enlarged);
+    }
+  </script>
 </body>
 </html>
