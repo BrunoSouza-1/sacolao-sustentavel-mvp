@@ -20,8 +20,6 @@ def create_app(test_config=None):
 
     with app.app_context():
         db.create_all()
-with app.app_context():
-        db.create_all()
         if not test_config:
             from .models import Lojista, Oferta
             if not Lojista.query.first():
